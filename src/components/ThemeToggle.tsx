@@ -10,6 +10,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
     <button
       onClick={toggleTheme}
       className={`p-1.5 rounded-lg transition-colors ${className}`}
+      aria-label={theme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
       title={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}
     >
       {theme === 'dark'

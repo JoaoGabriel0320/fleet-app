@@ -19,7 +19,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="bg-blue-800 text-white px-4 py-2.5 flex items-center gap-3 shadow-md">
+      <header className="bg-blue-800 dark:bg-blue-900 text-white px-4 py-2.5 flex items-center gap-3 shadow-md">
         <Car className="w-5 h-5 shrink-0" />
         <span className="font-bold text-base tracking-tight">FleetControl</span>
 
