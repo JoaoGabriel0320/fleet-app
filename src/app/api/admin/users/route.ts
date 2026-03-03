@@ -12,7 +12,7 @@ function getSupabaseAdmin() {
   )
 }
 
-async function isAdminAuthorized(req: NextRequest): Promise<boolean> {
+async function isAdminAuthorized(): Promise<boolean> {
   const cookieStore = await cookies()
   const session = cookieStore.get('admin_session')?.value
   return session === process.env.ADMIN_PASSWORD?.trim()
@@ -20,7 +20,7 @@ async function isAdminAuthorized(req: NextRequest): Promise<boolean> {
 
 // POST /api/admin/users — cria auth user e vincula ao collaborator
 export async function POST(req: NextRequest) {
-  if (!(await isAdminAuthorized(req))) {
+  if (!(await isAdminAuthorized())) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
 // DELETE /api/admin/users — remove acesso de um collaborator
 export async function DELETE(req: NextRequest) {
-  if (!(await isAdminAuthorized(req))) {
+  if (!(await isAdminAuthorized())) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
