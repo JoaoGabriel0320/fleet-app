@@ -22,11 +22,11 @@ export default function CollaboratorsPage() {
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('active')
 
   async function load() {
-    const [{ data: c }, { data: b }] = await Promise.all([
-      supabase.from('collaborators').select('*, branch:branches(name, city)').order('name'),
+    const [collabRes, { data: b }] = await Promise.all([
+      fetch('/api/admin/collaborators').then(r => r.json()),
       supabase.from('branches').select('*').order('name'),
     ])
-    setCollaborators(c ?? [])
+    setCollaborators(Array.isArray(collabRes) ? collabRes : [])
     setBranches(b ?? [])
   }
 
@@ -49,15 +49,18 @@ export default function CollaboratorsPage() {
   async function save() {
     if (!form.name || !form.badge_number) return
     setSaving(true)
-    const payload = { ...form, branch_id: form.branch_id || null }
-    if (editing) {
-      await supabase.from('collaborators').update(payload).eq('id', editing.id)
-    } else {
-      await supabase.from('collaborators').insert({ ...payload, is_active: true })
+    try {
+      const payload = { name: form.name, badge_number: form.badge_number, branch_id: form.branch_id || null }
+      const res = editing
+        ? await fetch('/api/admin/collaborators', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: editing.id, ...payload }) })
+        : await fetch('/api/admin/collaborators', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+      const json = await res.json()
+      if (!res.ok) { alert(`Erro: ${json.error}`); return }
+      setModal(null)
+      load()
+    } finally {
+      setSaving(false)
     }
-    setSaving(false)
-    setModal(null)
-    load()
   }
 
   async function createAccess() {
@@ -87,7 +90,8 @@ export default function CollaboratorsPage() {
   }
 
   async function toggleActive(c: Collaborator) {
-    await supabase.from('collaborators').update({ is_active: !c.is_active }).eq('id', c.id)
+    const res = await fetch('/api/admin/collaborators', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: c.id, is_active: !c.is_active }) })
+    if (!res.ok) { alert('Erro ao alterar status do colaborador.'); return }
     load()
   }
 
