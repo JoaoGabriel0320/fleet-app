@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
 
 function getSupabaseAdmin() {
   return createClient(
@@ -12,15 +11,14 @@ function getSupabaseAdmin() {
   )
 }
 
-async function isAdminAuthorized(): Promise<boolean> {
-  const cookieStore = await cookies()
-  const session = cookieStore.get('admin_session')?.value
-  return session === process.env.ADMIN_PASSWORD?.trim()
+function isAdminAuthorized(req: NextRequest): boolean {
+  const session = req.cookies.get('admin_session')?.value ?? ''
+  return session.length > 0 && session === (process.env.ADMIN_PASSWORD ?? '').trim()
 }
 
 // GET /api/admin/collaborators — lista colaboradores com filial
-export async function GET() {
-  if (!(await isAdminAuthorized())) {
+export async function GET(req: NextRequest) {
+  if (!isAdminAuthorized(req)) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
@@ -36,7 +34,7 @@ export async function GET() {
 
 // POST /api/admin/collaborators — cria colaborador
 export async function POST(req: NextRequest) {
-  if (!(await isAdminAuthorized())) {
+  if (!isAdminAuthorized(req)) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
@@ -58,7 +56,7 @@ export async function POST(req: NextRequest) {
 
 // PUT /api/admin/collaborators — atualiza colaborador
 export async function PUT(req: NextRequest) {
-  if (!(await isAdminAuthorized())) {
+  if (!isAdminAuthorized(req)) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 

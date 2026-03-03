@@ -2,7 +2,6 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
 
 function getSupabaseAdmin() {
   return createClient(
@@ -12,15 +11,14 @@ function getSupabaseAdmin() {
   )
 }
 
-async function isAdminAuthorized(): Promise<boolean> {
-  const cookieStore = await cookies()
-  const session = cookieStore.get('admin_session')?.value
-  return session === process.env.ADMIN_PASSWORD?.trim()
+function isAdminAuthorized(req: NextRequest): boolean {
+  const session = req.cookies.get('admin_session')?.value ?? ''
+  return session.length > 0 && session === (process.env.ADMIN_PASSWORD ?? '').trim()
 }
 
 // POST /api/admin/users — cria auth user e vincula ao collaborator
 export async function POST(req: NextRequest) {
-  if (!(await isAdminAuthorized())) {
+  if (!isAdminAuthorized(req)) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
@@ -36,7 +34,7 @@ export async function POST(req: NextRequest) {
   const { data: { user }, error: createError } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
-    email_confirm: true, // confirma o email automaticamente
+    email_confirm: true,
   })
 
   if (createError || !user) {
@@ -50,7 +48,6 @@ export async function POST(req: NextRequest) {
     .eq('id', collaboratorId)
 
   if (updateError) {
-    // Rollback: deleta o user criado
     await supabaseAdmin.auth.admin.deleteUser(user.id)
     return NextResponse.json({ error: 'Erro ao vincular colaborador' }, { status: 500 })
   }
@@ -60,14 +57,13 @@ export async function POST(req: NextRequest) {
 
 // DELETE /api/admin/users — remove acesso de um collaborator
 export async function DELETE(req: NextRequest) {
-  if (!(await isAdminAuthorized())) {
+  if (!isAdminAuthorized(req)) {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
   }
 
   const { collaboratorId } = await req.json()
   const supabaseAdmin = getSupabaseAdmin()
 
-  // Busca o user_id atual
   const { data: collab } = await supabaseAdmin
     .from('collaborators')
     .select('user_id')
@@ -78,10 +74,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: 'Colaborador sem acesso configurado' }, { status: 400 })
   }
 
-  // Remove o user do Auth
   await supabaseAdmin.auth.admin.deleteUser(collab.user_id)
-
-  // Desvincula do collaborator
   await supabaseAdmin.from('collaborators').update({ user_id: null }).eq('id', collaboratorId)
 
   return NextResponse.json({ ok: true })
