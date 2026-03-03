@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/context/AuthContext'
+import { ThemeProvider } from '@/context/ThemeContext'
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
@@ -22,12 +23,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
-      <body className={`${geist.variable} antialiased bg-slate-50 text-slate-900`}>
-        <AuthProvider>
-          <ServiceWorkerRegistration />
-          {children}
-        </AuthProvider>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body className={`${geist.variable} antialiased bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100`}>
+        <ThemeProvider>
+          <AuthProvider>
+            <ServiceWorkerRegistration />
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

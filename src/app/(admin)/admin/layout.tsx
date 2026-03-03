@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Car, Users, Building2, History, ArrowLeft, Settings, LogOut, Calendar, LayoutDashboard } from 'lucide-react'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 const navItems = [
   { href: '/admin',               label: 'Dashboard',      icon: LayoutDashboard },
@@ -27,23 +28,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900">
       {/* Header */}
-      <header className="bg-slate-900 text-white px-4 py-3 flex items-center gap-3 shadow-md">
+      <header className="bg-slate-900 dark:bg-slate-950 text-white px-4 py-3 flex items-center gap-3 shadow-md">
         <Link href="/dashboard" className="p-1.5 rounded hover:bg-slate-700 transition-colors" title="Voltar ao app">
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <Settings className="w-5 h-5 text-slate-400" />
         <span className="font-bold text-lg">Administração</span>
-        <button onClick={logout} className="ml-auto flex items-center gap-1.5 text-xs text-slate-400 hover:text-white px-2 py-1 rounded hover:bg-slate-700 transition-colors">
-          <LogOut className="w-3.5 h-3.5" /> Sair
-        </button>
+        <div className="ml-auto flex items-center gap-2">
+          <ThemeToggle className="text-slate-400 hover:bg-slate-700 hover:text-white" />
+          <button onClick={logout} className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white px-2 py-1 rounded hover:bg-slate-700 transition-colors">
+            <LogOut className="w-3.5 h-3.5" /> Sair
+          </button>
+        </div>
       </header>
 
       {/* Tab nav */}
-      <div className="bg-white border-b border-slate-200 px-2 flex gap-1 overflow-x-auto">
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-2 flex gap-1 overflow-x-auto">
         {navItems.map(({ href, label, icon: Icon }) => {
-          // /admin só ativa exatamente em /admin; demais rotas usam startsWith
           const active = href === '/admin' ? pathname === '/admin' : pathname === href
           return (
             <Link
@@ -51,8 +54,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               href={href}
               className={`flex items-center gap-1.5 px-3 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                 active
-                  ? 'border-blue-700 text-blue-700'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
+                  ? 'border-blue-700 text-blue-700 dark:text-blue-400 dark:border-blue-400'
+                  : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
               <Icon className="w-4 h-4" />

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Car, LayoutDashboard, PlusCircle, LogOut, Calendar } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const { collaborator, signOut } = useAuth()
@@ -31,6 +32,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center shrink-0">
               <span className="text-white font-semibold text-xs">{collaborator.name.charAt(0)}</span>
             </div>
+            <ThemeToggle className="text-blue-200 hover:bg-blue-700 hover:text-white" />
             <button
               onClick={handleSignOut}
               className="p-1.5 rounded-lg hover:bg-blue-700 transition-colors"
@@ -48,20 +50,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </main>
 
       {/* Bottom nav */}
-      <nav className="bg-white border-t border-slate-200 flex justify-around py-2 sticky bottom-0">
-        <Link href="/dashboard" className="flex flex-col items-center gap-1 text-slate-500 hover:text-blue-700 text-xs py-1 px-3">
+      <nav className="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex justify-around py-2 sticky bottom-0">
+        <Link href="/dashboard" className="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-400 text-xs py-1 px-3">
           <LayoutDashboard className="w-5 h-5" />
           Início
         </Link>
-        <Link href="/checkout" className="flex flex-col items-center gap-1 text-slate-500 hover:text-blue-700 text-xs py-1 px-3">
+        <Link href="/checkout" className="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-400 text-xs py-1 px-3">
           <PlusCircle className="w-5 h-5" />
           Retirar
         </Link>
-        <Link href="/schedules" className="flex flex-col items-center gap-1 text-slate-500 hover:text-blue-700 text-xs py-1 px-3">
+        <Link href="/schedules" className="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-400 text-xs py-1 px-3">
           <Calendar className="w-5 h-5" />
           Agenda
         </Link>
-        <Link href="/checkin" className="flex flex-col items-center gap-1 text-slate-500 hover:text-blue-700 text-xs py-1 px-3">
+        <Link href="/checkin" className="flex flex-col items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-400 text-xs py-1 px-3">
           <Car className="w-5 h-5" />
           Devolver
         </Link>
