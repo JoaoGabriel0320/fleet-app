@@ -76,17 +76,22 @@ export default function CheckinPage() {
 
       const arrivedAt = new Date().toISOString()
 
-      const { error: tripUpdateError } = await supabase.from('trips').update({
-        km_arrival: data.km_arrival,
-        arrived_at: arrivedAt,
-        photos_arrival: uploadedUrls,
-        notes_arrival: data.notes_arrival,
-        status: 'closed',
-      }).eq('id', data.trip_id)
-      if (tripUpdateError) throw tripUpdateError
-
-      const { error: vehicleError } = await supabase.from('vehicles').update({ status: 'available' }).eq('id', selectedTrip.vehicle_id)
-      if (vehicleError) throw vehicleError
+      const checkinRes = await fetch('/api/checkin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          trip_id: data.trip_id,
+          vehicle_id: selectedTrip.vehicle_id,
+          km_arrival: data.km_arrival,
+          arrived_at: arrivedAt,
+          photos_arrival: uploadedUrls,
+          notes_arrival: data.notes_arrival || null,
+        }),
+      })
+      if (!checkinRes.ok) {
+        const json = await checkinRes.json()
+        throw new Error(json.error ?? 'Erro ao registrar devolução')
+      }
 
       const kmDriven = data.km_arrival - selectedTrip.km_departure
       const duration = formatDistanceToNow(new Date(selectedTrip.departed_at), { locale: ptBR })
