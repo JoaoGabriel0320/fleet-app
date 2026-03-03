@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FleetControl
 
-## Getting Started
+Sistema de gestão de frota para controle de retiradas, devoluções e agendamentos de veículos.
 
-First, run the development server:
+- **Produção:** https://fleetapp-xi.vercel.app
+- **Repositório:** https://github.com/JoaoGabriel0320/fleet-app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Stack
+
+| Camada | Tecnologia |
+|--------|-----------|
+| Framework | Next.js 15 (App Router) |
+| Linguagem | TypeScript |
+| Estilização | Tailwind CSS v4 |
+| Banco de dados | Supabase (PostgreSQL) |
+| Storage | Supabase Storage |
+| Formulários | React Hook Form + Zod |
+| Deploy | Vercel |
+
+---
+
+## Funcionalidades implementadas
+
+- **Retirada de veículo** — checkout em 4 etapas com fotos e KM de saída
+- **Devolução** — checkin com fotos e KM de chegada
+- **Agendamento** — reserva de veículo por data/hora
+- **Dashboard** — visão geral da frota em tempo real (Supabase Realtime)
+- **Histórico** — relatório de viagens com exportação CSV (padrão Excel BR `;`)
+- **Dark mode** — tema claro/escuro com persistência no localStorage
+- **PWA** — instalável no celular como app nativo
+
+---
+
+## Arquitetura
+
+Veja [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) para detalhes completos.
+
+```
+Usuário (browser)
+      ↓
+  Next.js — Vercel
+  ├── Pages (src/app)       → UI em React
+  ├── API Routes (src/app/api) → lógica de admin
+  └── supabase-js            → acesso direto ao banco
+              ↓
+         Supabase (cloud)
+         ├── PostgreSQL       → dados
+         └── Storage          → fotos dos veículos
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## CI/CD
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Veja [docs/CICD.md](docs/CICD.md) para o fluxo completo.
 
-## Learn More
+```
+feat/* → PR → develop (staging) → PR → master (produção)
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Desenvolvimento local
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Instalar dependências
+npm install
 
-## Deploy on Vercel
+# Copiar variáveis de ambiente
+cp .env.example .env.local
+# Preencher NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, ADMIN_PASSWORD
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Rodar em desenvolvimento
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Acesse [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Épico FLEET — Roadmap
+
+| Story | Descrição | Status |
+|-------|-----------|--------|
+| FLEET-001 | Retirada e devolução de veículos | ✅ Produção |
+| FLEET-002 | Agendamento por data/hora | ✅ Produção |
+| FLEET-003 | Cadastro de veículos (admin) | 🔜 Próximo |
+| FLEET-004 | Cadastro de colaboradores e filiais | 🔜 Próximo |
+| FLEET-005 | Dashboard em tempo real | ✅ Produção |
+| FLEET-006 | Histórico e relatórios | ✅ Produção |
+| FLEET-007 | Alertas de atraso | 🔜 Próximo |
+| FLEET-008 | Manutenção por KM | 🔜 Próximo |
