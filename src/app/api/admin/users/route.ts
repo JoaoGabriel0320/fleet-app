@@ -15,7 +15,7 @@ function getSupabaseAdmin() {
 async function isAdminAuthorized(req: NextRequest): Promise<boolean> {
   const cookieStore = await cookies()
   const session = cookieStore.get('admin_session')?.value
-  return session === process.env.ADMIN_PASSWORD
+  return session === process.env.ADMIN_PASSWORD?.trim()
 }
 
 // POST /api/admin/users — cria auth user e vincula ao collaborator
