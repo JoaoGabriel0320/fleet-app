@@ -38,8 +38,10 @@ export default function Dashboard() {
     }
 
     const [{ data: v }, { data: t }, schedulesRes] = await Promise.all(queries)
-    setVehicles(v ?? [])
-    setActiveTrips(t ?? [])
+    const vehicleList = v ?? []
+    const inUseIds = new Set(vehicleList.filter(x => x.status === 'in_use').map(x => x.id))
+    setVehicles(vehicleList)
+    setActiveTrips((t ?? []).filter(trip => inUseIds.has(trip.vehicle_id)))
     setUpcomingSchedules(schedulesRes?.data ?? [])
     setLoading(false)
   }, [collaborator])

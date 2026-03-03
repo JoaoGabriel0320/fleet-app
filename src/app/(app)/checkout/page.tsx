@@ -165,7 +165,8 @@ function CheckoutPageContent() {
       }).select().single()
 
       if (tripError) throw tripError
-      await supabase.from('vehicles').update({ status: 'in_use' }).eq('id', data.vehicle_id)
+      const { error: vehicleError } = await supabase.from('vehicles').update({ status: 'in_use' }).eq('id', data.vehicle_id)
+      if (vehicleError) throw vehicleError
 
       if (scheduleId) {
         await supabase.from('schedules').update({ status: 'completed' }).eq('id', scheduleId)
