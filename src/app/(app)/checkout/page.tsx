@@ -167,7 +167,6 @@ function CheckoutPageContent() {
       if (tripError) throw tripError
       await supabase.from('vehicles').update({ status: 'in_use' }).eq('id', data.vehicle_id)
 
-      // Marca o agendamento como concluído
       if (scheduleId) {
         await supabase.from('schedules').update({ status: 'completed' }).eq('id', scheduleId)
       }
@@ -189,12 +188,12 @@ function CheckoutPageContent() {
   if (scheduleError) {
     return (
       <div className="space-y-4 mt-4">
-        <h1 className="text-xl font-bold text-slate-800 mt-2">Retirada de veículo</h1>
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-amber-800 text-sm">
+        <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-2">Retirada de veículo</h1>
+        <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-xl p-4 text-amber-800 dark:text-amber-400 text-sm">
           <p className="font-semibold mb-1">Veículo indisponível</p>
           <p>{scheduleError}</p>
         </div>
-        <button onClick={() => router.push('/schedules')} className="w-full border border-slate-300 text-slate-700 font-semibold py-3 rounded-xl hover:bg-slate-50 transition-colors">
+        <button onClick={() => router.push('/schedules')} className="w-full border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
           Voltar aos agendamentos
         </button>
       </div>
@@ -204,13 +203,13 @@ function CheckoutPageContent() {
   if (done) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center gap-4">
-        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-          <CheckCircle className="w-8 h-8 text-green-600" />
+        <div className="w-16 h-16 bg-green-100 dark:bg-green-900/40 rounded-full flex items-center justify-center">
+          <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
         </div>
-        <h1 className="text-xl font-bold text-slate-800">Retirada registrada!</h1>
-        <p className="text-slate-500">Registro <span className="font-mono font-semibold">#{registrationId}</span> criado com sucesso.</p>
-        {selectedVehicle && <p className="text-sm text-slate-400">{selectedVehicle.plate} — {selectedVehicle.model}</p>}
-        {scheduleId && <p className="text-xs text-green-600 font-medium">Agendamento concluído ✓</p>}
+        <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">Retirada registrada!</h1>
+        <p className="text-slate-500 dark:text-slate-400">Registro <span className="font-mono font-semibold">#{registrationId}</span> criado com sucesso.</p>
+        {selectedVehicle && <p className="text-sm text-slate-400 dark:text-slate-500">{selectedVehicle.plate} — {selectedVehicle.model}</p>}
+        {scheduleId && <p className="text-xs text-green-600 dark:text-green-400 font-medium">Agendamento concluído ✓</p>}
         <button onClick={() => router.push('/dashboard')} className="mt-4 bg-blue-700 text-white px-6 py-2.5 rounded-xl font-medium">
           Voltar ao início
         </button>
@@ -221,9 +220,9 @@ function CheckoutPageContent() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-bold text-slate-800 mt-2">Retirada de veículo</h1>
+        <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100 mt-2">Retirada de veículo</h1>
         {scheduleData && (
-          <div className="flex items-center gap-1.5 mt-1 text-xs text-indigo-600 font-medium">
+          <div className="flex items-center gap-1.5 mt-1 text-xs text-indigo-600 dark:text-indigo-400 font-medium">
             <Calendar className="w-3.5 h-3.5" />
             Via agendamento de {format(new Date(scheduleData.scheduled_departure), "dd/MM 'às' HH:mm", { locale: ptBR })}
           </div>
@@ -236,20 +235,20 @@ function CheckoutPageContent() {
         {/* ── Step 1: Vehicle ── */}
         {step === 'vehicle' && (
           <div className="space-y-4">
-            <h2 className="font-semibold text-slate-700 flex items-center gap-2"><Car className="w-4 h-4" /> Selecione o veículo</h2>
+            <h2 className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2"><Car className="w-4 h-4" /> Selecione o veículo</h2>
             {vehicles.length === 0
-              ? <p className="text-slate-500 text-sm bg-amber-50 border border-amber-200 rounded-xl p-3">Nenhum veículo disponível no momento.</p>
+              ? <p className="text-slate-500 dark:text-slate-400 text-sm bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-xl p-3">Nenhum veículo disponível no momento.</p>
               : vehicles.map(v => (
-                <label key={v.id} className={`flex items-center gap-3 border rounded-xl p-3 cursor-pointer transition-colors ${selectedVehicleId === v.id ? 'border-blue-600 bg-blue-50' : 'border-slate-200 bg-white'}`}>
+                <label key={v.id} className={`flex items-center gap-3 border rounded-xl p-3 cursor-pointer transition-colors ${selectedVehicleId === v.id ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/30' : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'}`}>
                   <input type="radio" value={v.id} {...register('vehicle_id')} className="accent-blue-700" />
                   <div>
-                    <p className="font-semibold text-slate-800">{v.plate}</p>
-                    <p className="text-sm text-slate-500">{v.brand} {v.model} · {v.year} · {v.color}</p>
+                    <p className="font-semibold text-slate-800 dark:text-slate-100">{v.plate}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">{v.brand} {v.model} · {v.year} · {v.color}</p>
                   </div>
                 </label>
               ))
             }
-            {errors.vehicle_id && <p className="text-red-500 text-sm">{errors.vehicle_id.message}</p>}
+            {errors.vehicle_id && <p className="text-red-500 dark:text-red-400 text-sm">{errors.vehicle_id.message}</p>}
             <button type="button" onClick={advanceFromVehicle} disabled={!selectedVehicleId}
               className="w-full bg-blue-700 text-white py-3 rounded-xl font-medium disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               Continuar <ChevronRight className="w-4 h-4" />
@@ -260,86 +259,83 @@ function CheckoutPageContent() {
         {/* ── Step 2: Details ── */}
         {step === 'details' && (
           <div className="space-y-4">
-            <h2 className="font-semibold text-slate-700 flex items-center gap-2"><User className="w-4 h-4" /> Informações da viagem</h2>
+            <h2 className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2"><User className="w-4 h-4" /> Informações da viagem</h2>
 
-            {/* Veículo bloqueado (vindo de agendamento) */}
             {scheduleVehicle && (
-              <div className="flex items-center gap-3 border border-indigo-200 bg-indigo-50 rounded-xl p-3">
-                <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center shrink-0">
-                  <Car className="w-4 h-4 text-indigo-600" />
+              <div className="flex items-center gap-3 border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl p-3">
+                <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center shrink-0">
+                  <Car className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-slate-800 text-sm">{scheduleVehicle.plate}</p>
-                  <p className="text-xs text-slate-500">{scheduleVehicle.brand} {scheduleVehicle.model} · {scheduleVehicle.year} · {scheduleVehicle.color}</p>
+                  <p className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{scheduleVehicle.plate}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{scheduleVehicle.brand} {scheduleVehicle.model} · {scheduleVehicle.year} · {scheduleVehicle.color}</p>
                 </div>
-                <Lock className="w-4 h-4 text-slate-400" />
+                <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500" />
               </div>
             )}
 
-            {/* ORIGEM */}
             <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 flex items-center gap-1">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
                 <MapPin className="w-3 h-3 text-green-600" /> Origem (de onde está saindo) <span className="text-red-500">*</span>
               </label>
-              <select {...register('origin_branch_id')} className="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-slate-800 bg-white">
+              <select {...register('origin_branch_id')} className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2.5 text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800">
                 <option value="">Selecione a filial de origem...</option>
                 {branches.map(b => <option key={b.id} value={b.id}>{b.name} — {b.city}</option>)}
               </select>
-              {errors.origin_branch_id && <p className="text-red-500 text-xs mt-1">{errors.origin_branch_id.message}</p>}
+              {errors.origin_branch_id && <p className="text-red-500 dark:text-red-400 text-xs mt-1">{errors.origin_branch_id.message}</p>}
             </div>
 
             <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 flex items-center gap-1">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
                 <User className="w-3 h-3" /> Colaborador
               </label>
-              <div className="flex items-center gap-3 border border-slate-200 bg-slate-50 rounded-lg px-3 py-2.5">
-                <div className="w-7 h-7 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
-                  <span className="text-blue-700 font-semibold text-xs">{currentUser?.name?.charAt(0) ?? '?'}</span>
+              <div className="flex items-center gap-3 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-lg px-3 py-2.5">
+                <div className="w-7 h-7 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center shrink-0">
+                  <span className="text-blue-700 dark:text-blue-400 font-semibold text-xs">{currentUser?.name?.charAt(0) ?? '?'}</span>
                 </div>
                 <div>
-                  <p className="font-medium text-slate-800 text-sm">{currentUser?.name ?? 'Carregando...'}</p>
-                  {currentUser?.badge_number && <p className="text-xs text-slate-500">Setor: {currentUser.badge_number}</p>}
+                  <p className="font-medium text-slate-800 dark:text-slate-100 text-sm">{currentUser?.name ?? 'Carregando...'}</p>
+                  {currentUser?.badge_number && <p className="text-xs text-slate-500 dark:text-slate-400">Setor: {currentUser.badge_number}</p>}
                 </div>
               </div>
               <input type="hidden" {...register('collaborator_id')} />
             </div>
 
-            {/* DESTINO */}
             <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 flex items-center gap-1">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
                 <MapPin className="w-3 h-3 text-red-500" /> Destino (filial)
               </label>
-              <select {...register('destination_branch_id')} className="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-slate-800 bg-white">
+              <select {...register('destination_branch_id')} className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2.5 text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800">
                 <option value="">Selecione a filial de destino...</option>
                 {branches.map(b => <option key={b.id} value={b.id}>{b.name} — {b.city}</option>)}
               </select>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">Destino (descrição livre)</label>
-              <input {...register('destination_description')} placeholder="Ex: Reunião cliente, entrega..." className="w-full border border-slate-300 rounded-lg px-3 py-2.5" />
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 block">Destino (descrição livre)</label>
+              <input {...register('destination_description')} placeholder="Ex: Reunião cliente, entrega..." className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" />
             </div>
 
             <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 flex items-center gap-1">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
                 <Gauge className="w-3 h-3" /> KM atual do veículo <span className="text-red-500">*</span>
               </label>
-              <input type="number" {...register('km_departure')} placeholder="Ex: 45230" className="w-full border border-slate-300 rounded-lg px-3 py-2.5" />
-              {errors.km_departure && <p className="text-red-500 text-xs mt-1">{errors.km_departure.message}</p>}
+              <input type="number" {...register('km_departure')} placeholder="Ex: 45230" className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2.5 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" />
+              {errors.km_departure && <p className="text-red-500 dark:text-red-400 text-xs mt-1">{errors.km_departure.message}</p>}
             </div>
 
             <div>
-              <label className="text-sm font-medium text-slate-700 mb-1 block">Observações</label>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1 block">Observações</label>
               <textarea {...register('notes_departure')} rows={3} placeholder="Alguma observação sobre o veículo ou viagem..."
-                className="w-full border border-slate-300 rounded-lg px-3 py-2.5 resize-none" />
+                className="w-full border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-2.5 resize-none bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100" />
             </div>
 
             <div className="flex gap-3">
               {!scheduleVehicle && (
-                <button type="button" onClick={() => setStep('vehicle')} className="flex-1 border border-slate-300 py-3 rounded-xl font-medium text-slate-700">Voltar</button>
+                <button type="button" onClick={() => setStep('vehicle')} className="flex-1 border border-slate-300 dark:border-slate-600 py-3 rounded-xl font-medium text-slate-700 dark:text-slate-300">Voltar</button>
               )}
               {scheduleVehicle && (
-                <button type="button" onClick={() => router.push('/schedules')} className="flex-1 border border-slate-300 py-3 rounded-xl font-medium text-slate-700">Cancelar</button>
+                <button type="button" onClick={() => router.push('/schedules')} className="flex-1 border border-slate-300 dark:border-slate-600 py-3 rounded-xl font-medium text-slate-700 dark:text-slate-300">Cancelar</button>
               )}
               <button type="button" onClick={advanceFromDetails}
                 className="flex-1 bg-blue-700 text-white py-3 rounded-xl font-medium flex items-center justify-center gap-2">
@@ -352,11 +348,11 @@ function CheckoutPageContent() {
         {/* ── Step 3: Photos ── */}
         {step === 'photos' && (
           <div className="space-y-5">
-            <h2 className="font-semibold text-slate-700 flex items-center gap-2"><Car className="w-4 h-4" /> Fotos do veículo</h2>
+            <h2 className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2"><Car className="w-4 h-4" /> Fotos do veículo</h2>
             <PhotoCapture label="Fotos do veículo (frente, traseira, laterais)" photos={photos} onChange={setPhotos} maxPhotos={6} required />
             <PhotoCapture label="Foto do odômetro / KM" photos={kmPhotos} onChange={setKmPhotos} maxPhotos={1} required />
             <div className="flex gap-3">
-              <button type="button" onClick={() => setStep('details')} className="flex-1 border border-slate-300 py-3 rounded-xl font-medium text-slate-700">Voltar</button>
+              <button type="button" onClick={() => setStep('details')} className="flex-1 border border-slate-300 dark:border-slate-600 py-3 rounded-xl font-medium text-slate-700 dark:text-slate-300">Voltar</button>
               <button type="button" onClick={advanceFromPhotos}
                 className="flex-1 bg-blue-700 text-white py-3 rounded-xl font-medium flex items-center justify-center gap-2">
                 Revisar <ChevronRight className="w-4 h-4" />
@@ -368,17 +364,17 @@ function CheckoutPageContent() {
         {/* ── Step 4: Confirm ── */}
         {step === 'confirm' && (
           <div className="space-y-4">
-            <h2 className="font-semibold text-slate-700">Confirmar retirada</h2>
-            <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-2 text-sm">
+            <h2 className="font-semibold text-slate-700 dark:text-slate-300">Confirmar retirada</h2>
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 space-y-2 text-sm">
               <Row label="Veículo" value={`${selectedVehicle?.plate} — ${selectedVehicle?.brand} ${selectedVehicle?.model}`} />
               <Row label="Colaborador" value={currentUser?.name ?? '—'} />
               <Row label="Origem" value={selectedOrigin ? `${selectedOrigin.name} — ${selectedOrigin.city}` : '—'} />
               <Row label="Fotos" value={`${photos.length + kmPhotos.length} foto(s) registrada(s)`} />
               <Row label="Data/hora" value={new Date().toLocaleString('pt-BR')} />
             </div>
-            <p className="text-xs text-slate-500 text-center">Ao confirmar, o veículo será marcado como <strong>em uso</strong>.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 text-center">Ao confirmar, o veículo será marcado como <strong>em uso</strong>.</p>
             <div className="flex gap-3">
-              <button type="button" onClick={() => setStep('photos')} className="flex-1 border border-slate-300 py-3 rounded-xl font-medium text-slate-700">Voltar</button>
+              <button type="button" onClick={() => setStep('photos')} className="flex-1 border border-slate-300 dark:border-slate-600 py-3 rounded-xl font-medium text-slate-700 dark:text-slate-300">Voltar</button>
               <button type="submit" disabled={submitting}
                 className="flex-1 bg-green-600 text-white py-3 rounded-xl font-medium disabled:opacity-50">
                 {submitting ? 'Registrando...' : 'Confirmar retirada'}
@@ -402,8 +398,8 @@ export default function CheckoutPage() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-2">
-      <span className="text-slate-500 shrink-0">{label}</span>
-      <span className="font-medium text-slate-800 text-right">{value}</span>
+      <span className="text-slate-500 dark:text-slate-400 shrink-0">{label}</span>
+      <span className="font-medium text-slate-800 dark:text-slate-100 text-right">{value}</span>
     </div>
   )
 }
@@ -435,14 +431,14 @@ function StepIndicator({ current, completed, onNavigate }: {
               disabled={isLocked}
               className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-colors ${
                 isCurrent ? 'bg-blue-700 text-white' :
-                isDone ? 'bg-green-100 text-green-700 hover:bg-green-200' :
-                'bg-slate-100 text-slate-400 cursor-not-allowed'
+                isDone ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/60' :
+                'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed'
               }`}
             >
               {isLocked ? <Lock className="w-3 h-3" /> : isDone && !isCurrent ? <CheckCircle className="w-3 h-3" /> : <span>{i + 1}</span>}
               {label}
             </button>
-            {i < steps.length - 1 && <ChevronRight className="w-3 h-3 text-slate-300 shrink-0" />}
+            {i < steps.length - 1 && <ChevronRight className="w-3 h-3 text-slate-300 dark:text-slate-600 shrink-0" />}
           </div>
         )
       })}

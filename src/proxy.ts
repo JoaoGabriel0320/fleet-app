@@ -7,7 +7,7 @@ export async function proxy(req: NextRequest) {
   // ── Admin routes: protegidas por cookie simples ──
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
     const session = req.cookies.get('admin_session')?.value
-    if (session !== process.env.ADMIN_PASSWORD) {
+    if (session !== process.env.ADMIN_PASSWORD?.trim()) {
       return NextResponse.redirect(new URL('/admin/login', req.url))
     }
     return NextResponse.next()
@@ -23,8 +23,8 @@ export async function proxy(req: NextRequest) {
   let response = NextResponse.next({ request: req })
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || 'https://placeholder.supabase.co',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() || 'placeholder-anon-key',
     {
       cookies: {
         getAll() { return req.cookies.getAll() },

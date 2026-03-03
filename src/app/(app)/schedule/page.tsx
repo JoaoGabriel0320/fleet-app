@@ -29,9 +29,8 @@ export default function SchedulePage() {
   const [error, setError] = useState('')
 
   const now = new Date()
-  // Default to next hour, rounded
   const defaultDeparture = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 0)
-  const defaultReturn = new Date(defaultDeparture.getTime() + 2 * 60 * 60 * 1000) // +2h
+  const defaultReturn = new Date(defaultDeparture.getTime() + 2 * 60 * 60 * 1000)
 
   const toInputValue = (d: Date) => format(d, "yyyy-MM-dd'T'HH:mm")
 
@@ -54,7 +53,6 @@ export default function SchedulePage() {
       setVehicles(v ?? [])
       setBranches(b ?? [])
 
-      // Pre-fill origin with collaborator's branch
       if (collaborator?.branch_id) {
         setForm(f => ({ ...f, origin_branch_id: collaborator.branch_id! }))
       }
@@ -90,9 +88,7 @@ export default function SchedulePage() {
 
     setSaving(true)
 
-    // Verifica conflito de horário para o mesmo veículo
     const depIso = new Date(form.scheduled_departure).toISOString()
-    // Se não informou retorno, assume +8h como janela de bloqueio
     const retIso = form.estimated_return
       ? new Date(form.estimated_return).toISOString()
       : new Date(new Date(form.scheduled_departure).getTime() + 8 * 60 * 60 * 1000).toISOString()
@@ -140,22 +136,22 @@ export default function SchedulePage() {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-2 mt-2">
-        <CalendarPlus className="w-5 h-5 text-blue-700" />
-        <h1 className="text-xl font-bold text-slate-800">Novo Agendamento</h1>
+        <CalendarPlus className="w-5 h-5 text-blue-700 dark:text-blue-400" />
+        <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">Novo Agendamento</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
 
         {/* Veículo */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-600">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 space-y-3">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
             <Car className="w-4 h-4" /> Veículo
           </div>
           <select
             value={form.vehicle_id}
             onChange={e => set('vehicle_id', e.target.value)}
             required
-            className="w-full border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
           >
             <option value="">Selecione um veículo...</option>
             {vehicles.map(v => (
@@ -167,16 +163,16 @@ export default function SchedulePage() {
         </div>
 
         {/* Origem / Destino */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-600">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 space-y-3">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
             <MapPin className="w-4 h-4" /> Trajeto
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 mb-1 block">Filial de origem</label>
+            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">Filial de origem</label>
             <select
               value={form.origin_branch_id}
               onChange={e => set('origin_branch_id', e.target.value)}
-              className="w-full border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
             >
               <option value="">Selecione...</option>
               {branches.map(b => (
@@ -185,11 +181,11 @@ export default function SchedulePage() {
             </select>
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 mb-1 block">Filial de destino</label>
+            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">Filial de destino</label>
             <select
               value={form.destination_branch_id}
               onChange={e => set('destination_branch_id', e.target.value)}
-              className="w-full border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
             >
               <option value="">Selecione...</option>
               {branches.map(b => (
@@ -198,59 +194,59 @@ export default function SchedulePage() {
             </select>
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 mb-1 block">Descrição do destino (opcional)</label>
+            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">Descrição do destino (opcional)</label>
             <input
               type="text"
               value={form.destination_description}
               onChange={e => set('destination_description', e.target.value)}
               placeholder="Ex: Reunião com cliente, Entrega de equipamentos..."
-              className="w-full border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
             />
           </div>
         </div>
 
         {/* Data/Hora */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
-          <div className="flex items-center gap-2 text-sm font-semibold text-slate-600">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 space-y-3">
+          <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
             <Clock className="w-4 h-4" /> Data e Hora
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 mb-1 block">Saída prevista *</label>
+            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">Saída prevista *</label>
             <input
               type="datetime-local"
               value={form.scheduled_departure}
               onChange={e => set('scheduled_departure', e.target.value)}
               required
               min={toInputValue(new Date())}
-              className="w-full border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-slate-500 mb-1 block">Retorno previsto (opcional)</label>
+            <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">Retorno previsto (opcional)</label>
             <input
               type="datetime-local"
               value={form.estimated_return}
               onChange={e => set('estimated_return', e.target.value)}
               min={form.scheduled_departure}
-              className="w-full border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
             />
           </div>
         </div>
 
         {/* Observações */}
-        <div className="bg-white border border-slate-200 rounded-xl p-4">
-          <label className="text-xs font-medium text-slate-500 mb-1 block">Observações (opcional)</label>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4">
+          <label className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1 block">Observações (opcional)</label>
           <textarea
             value={form.notes}
             onChange={e => set('notes', e.target.value)}
             rows={3}
             placeholder="Alguma observação sobre o uso do veículo..."
-            className="w-full border border-slate-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100"
           />
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">
+          <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm px-4 py-3 rounded-xl">
             {error}
           </div>
         )}
@@ -259,7 +255,7 @@ export default function SchedulePage() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="flex-1 border border-slate-300 text-slate-700 font-semibold py-3 rounded-xl hover:bg-slate-50 transition-colors"
+            className="flex-1 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             Cancelar
           </button>

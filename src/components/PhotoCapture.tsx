@@ -55,15 +55,15 @@ export function PhotoCapture({ label, photos, onChange, maxPhotos = 4, required 
 
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+      <label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-1">
         {label}
         {required && <span className="text-red-500">*</span>}
-        <span className="text-slate-400 font-normal">({photos.length}/{maxPhotos})</span>
+        <span className="text-slate-400 dark:text-slate-500 font-normal">({photos.length}/{maxPhotos})</span>
       </label>
 
       <div className="grid grid-cols-3 gap-2">
         {photos.map((src, idx) => (
-          <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-slate-200 bg-slate-100">
+          <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={src} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
             <button
@@ -81,7 +81,7 @@ export function PhotoCapture({ label, photos, onChange, maxPhotos = 4, required 
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={compressing}
-            className="aspect-square rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center gap-1 text-slate-400 hover:border-blue-400 hover:text-blue-500 transition-colors disabled:opacity-50"
+            className="aspect-square rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 flex flex-col items-center justify-center gap-1 text-slate-400 dark:text-slate-500 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors disabled:opacity-50"
           >
             {compressing ? (
               <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
