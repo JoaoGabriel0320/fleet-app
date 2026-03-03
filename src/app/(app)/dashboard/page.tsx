@@ -17,7 +17,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
-    const queries: Promise<any>[] = [
+    const queries: PromiseLike<any>[] = [
       supabase.from('vehicles').select('*, branch:branches(name)').order('plate'),
       supabase.from('trips')
         .select('*, vehicle:vehicles(plate,model,brand), collaborator:collaborators(name,badge_number)')
