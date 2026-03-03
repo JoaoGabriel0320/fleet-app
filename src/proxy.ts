@@ -23,8 +23,8 @@ export async function proxy(req: NextRequest) {
   let response = NextResponse.next({ request: req })
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || 'https://placeholder.supabase.co',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim() || 'placeholder-anon-key',
     {
       cookies: {
         getAll() { return req.cookies.getAll() },
