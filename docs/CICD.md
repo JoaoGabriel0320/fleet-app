@@ -114,3 +114,12 @@ curl -X POST https://api.vercel.com/v10/projects/prj_ATsXvj90CzsIS9eL4IwZCbTr4jn
 | 2026-03-03 | v1.0 | Deploy inicial — checkout, checkin, histórico, dashboard |
 | 2026-03-03 | v1.1 | Dark mode + anti-FOUC + PWA instalável |
 | 2026-03-03 | v1.2 | Fix: sincronização de status viagem/veículo |
+| 2026-03-03 | PR #13 | Fix: build falhando por middleware.ts conflitante + TypeScript types |
+
+### PR #13 — fix: build falhando por middleware.ts conflitante + TypeScript types (2026-03-03)
+**Problema raiz**: Todos os deploys estavam falhando (erro de build) desde o PR #9.
+Next.js 16 não aceita `middleware.ts` e `proxy.ts` simultaneamente — `proxy.ts` já é
+o middleware nativo.
+- Remove `src/middleware.ts` (conflito com `proxy.ts` no Next.js 16)
+- Corrige tipos TypeScript implícitos em `dashboard/page.tsx`
+- Primeiro deploy bem-sucedido desde PR #8
