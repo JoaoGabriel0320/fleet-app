@@ -101,9 +101,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-blue-400 text-xs mt-6">
-          Não tem acesso? Solicite ao TI.
-        </p>
+
       </div>
     </div>
   )
