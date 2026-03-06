@@ -24,6 +24,8 @@ export default function SchedulesPage() {
 
   async function load() {
     if (!collaborator) return
+    // Cancela automaticamente agendamentos vencidos (sem retirada no horário)
+    await fetch('/api/schedules/expire', { method: 'POST' })
     const { data } = await supabase
       .from('schedules')
       .select('*, vehicle:vehicles(plate,brand,model,year), origin_branch:branches!schedules_origin_branch_id_fkey(name,city), destination_branch:branches!schedules_destination_branch_id_fkey(name,city)')
@@ -44,8 +46,15 @@ export default function SchedulesPage() {
 
   if (loading) return <div className="flex justify-center mt-16"><div className="w-8 h-8 border-4 border-blue-700 border-t-transparent rounded-full animate-spin" /></div>
 
-  const upcoming = schedules.filter(s => s.status === 'pending' || s.status === 'confirmed')
-  const past = schedules.filter(s => s.status === 'cancelled' || s.status === 'completed' || (s.status === 'pending' && isPast(new Date(s.scheduled_departure))))
+  const isExpired = (s: Schedule) =>
+    (s.status === 'confirmed' || s.status === 'pending') && isPast(new Date(s.scheduled_departure))
+
+  const upcoming = schedules.filter(s =>
+    (s.status === 'pending' || s.status === 'confirmed') && !isExpired(s),
+  )
+  const past = schedules.filter(s =>
+    s.status === 'cancelled' || s.status === 'completed' || isExpired(s),
+  )
 
   return (
     <div className="space-y-5">
